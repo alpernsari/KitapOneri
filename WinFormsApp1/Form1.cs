@@ -4,9 +4,14 @@ namespace WinFormsApp1
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        private string girisYapanKullanici;
+        private int progressValue;
+        private List<string> tempOneriler;
+
+        public Form1(string kullaniciAdi)
         {
             InitializeComponent();
+            girisYapanKullanici = kullaniciAdi;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -24,6 +29,19 @@ namespace WinFormsApp1
                     lbKitapList.Items.Add(name);
                 }
             }
+
+            // ProgressBar ayarları
+            pbKitapOner.Minimum = 0;
+            pbKitapOner.Maximum = 100;
+            pbKitapOner.Value = 0;
+
+            // Timer ayarları
+            
+            timer1.Interval = 15;
+            timer1.Tick += timer1_Tick;
+
+            KullaniciBazliOner();
+            gbKullanici.Text = girisYapanKullanici;
         }
 
         private void btnSwitchRight_Click(object sender, EventArgs e)
@@ -127,6 +145,92 @@ namespace WinFormsApp1
             }
         }
 
+        private void btnKullaniciOner_Click(object sender, EventArgs e)
+        {
+            KullaniciBazliOner();
+        }
 
+        private void KullaniciBazliOner()
+        {
+            lbKullaniciOneriler.Items.Clear();
+            tempOneriler = new List<string>(); // Geçici listeyi sıfırla
+
+            // Kullanıcıya ait kategorileri kullanicikitaplar.txt'den oku
+            HashSet<string> kategoriler = new HashSet<string>();
+            string[] satirlar = File.ReadAllLines("kullanicikitaplar.txt");
+
+            foreach (string satir in satirlar)
+            {
+                string[] parcalar = satir.Split(',');
+
+                if (parcalar.Length > 1)
+                {
+                    string kullaniciAdi = parcalar[0].Trim();
+                    string kategori = parcalar[1].Trim();
+
+                    if (kullaniciAdi == girisYapanKullanici)
+                    {
+                        kategoriler.Add(kategori);
+                    }
+                }
+            }
+
+            // Tüm kitapları kitaplar.txt'den oku
+            List<string> uygunKitaplar = new List<string>();
+            string[] kitaplar = File.ReadAllLines("kitaplar.txt");
+
+            foreach (string kitap in kitaplar)
+            {
+                string[] parcalar = kitap.Split(',');
+
+                if (parcalar.Length > 0)
+                {
+                    string kategori = parcalar[0].Trim();
+                    if (kategoriler.Contains(kategori))
+                    {
+                        uygunKitaplar.Add(kitap);
+                    }
+                }
+            }
+
+            // Kategori yoğunluğunu belirle
+            Dictionary<string, int> kategoriSayisi = kategoriler
+                .GroupBy(k => k)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            // Rastgele 20 kitap seç, kategori yoğunluğunu göz önünde bulundur
+            Random rastgele = new Random();
+            List<string> rastgeleSecilenKitaplar = uygunKitaplar
+                .OrderByDescending(k => kategoriSayisi.ContainsKey(k.Split(',')[0]) ? kategoriSayisi[k.Split(',')[0]] : 0)
+                .ThenBy(x => rastgele.Next())
+                .Take(20)
+                .ToList();
+
+            tempOneriler = rastgeleSecilenKitaplar; // Önerileri geçici listeye ekle
+            progressValue = 0;
+            pbKitapOner.Value = 0;
+            timer1.Start(); // ProgressBar'ı başlat
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (progressValue < 100)
+            {
+                progressValue++;
+                pbKitapOner.Value = progressValue;
+            }
+            else
+            {
+                timer1.Stop(); // İşlem tamamlandığında timer durdurulur
+
+                // ProgressBar tamamlandıktan sonra ListBox'ı doldur
+                foreach (var kitap in tempOneriler)
+                {
+                    lbKullaniciOneriler.Items.Add(kitap);
+                }
+
+                MessageBox.Show("Öneriler başarıyla yüklendi!");
+            }
+        }
     }
 }

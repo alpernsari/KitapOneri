@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             label1 = new Label();
             label3 = new Label();
             lbSecilenKitaplar = new ListBox();
@@ -36,6 +37,12 @@
             btnSwitchLeft = new Button();
             btnRastgeleOner = new Button();
             lbOneriKitaplar = new ListBox();
+            btnKullaniciOner = new Button();
+            gbKullanici = new GroupBox();
+            pbKitapOner = new ProgressBar();
+            lbKullaniciOneriler = new ListBox();
+            timer1 = new System.Windows.Forms.Timer(components);
+            gbKullanici.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -110,16 +117,59 @@
             // 
             lbOneriKitaplar.FormattingEnabled = true;
             lbOneriKitaplar.ItemHeight = 15;
-            lbOneriKitaplar.Location = new Point(12, 430);
+            lbOneriKitaplar.Location = new Point(12, 460);
             lbOneriKitaplar.Name = "lbOneriKitaplar";
-            lbOneriKitaplar.Size = new Size(865, 409);
+            lbOneriKitaplar.Size = new Size(408, 379);
             lbOneriKitaplar.TabIndex = 11;
+            // 
+            // btnKullaniciOner
+            // 
+            btnKullaniciOner.Location = new Point(390, 10);
+            btnKullaniciOner.Name = "btnKullaniciOner";
+            btnKullaniciOner.Size = new Size(75, 23);
+            btnKullaniciOner.TabIndex = 13;
+            btnKullaniciOner.Text = "Yeni Öner";
+            btnKullaniciOner.UseVisualStyleBackColor = true;
+            btnKullaniciOner.Click += btnKullaniciOner_Click;
+            // 
+            // gbKullanici
+            // 
+            gbKullanici.Controls.Add(pbKitapOner);
+            gbKullanici.Controls.Add(lbKullaniciOneriler);
+            gbKullanici.Controls.Add(btnKullaniciOner);
+            gbKullanici.Location = new Point(426, 430);
+            gbKullanici.Name = "gbKullanici";
+            gbKullanici.Size = new Size(471, 409);
+            gbKullanici.TabIndex = 15;
+            gbKullanici.TabStop = false;
+            gbKullanici.Text = "Kullanıcı Adı";
+            // 
+            // pbKitapOner
+            // 
+            pbKitapOner.Location = new Point(82, 10);
+            pbKitapOner.Name = "pbKitapOner";
+            pbKitapOner.Size = new Size(302, 23);
+            pbKitapOner.TabIndex = 14;
+            // 
+            // lbKullaniciOneriler
+            // 
+            lbKullaniciOneriler.FormattingEnabled = true;
+            lbKullaniciOneriler.ItemHeight = 15;
+            lbKullaniciOneriler.Location = new Point(6, 39);
+            lbKullaniciOneriler.Name = "lbKullaniciOneriler";
+            lbKullaniciOneriler.Size = new Size(459, 364);
+            lbKullaniciOneriler.TabIndex = 12;
+            // 
+            // timer1
+            // 
+            timer1.Tick += timer1_Tick;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(903, 851);
+            Controls.Add(gbKullanici);
             Controls.Add(lbOneriKitaplar);
             Controls.Add(btnRastgeleOner);
             Controls.Add(btnSwitchLeft);
@@ -132,6 +182,7 @@
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
+            gbKullanici.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -145,5 +196,10 @@
         private Button btnSwitchLeft;
         private Button btnRastgeleOner;
         private ListBox lbOneriKitaplar;
+        private Button btnKullaniciOner;
+        private GroupBox gbKullanici;
+        private ListBox lbKullaniciOneriler;
+        private ProgressBar pbKitapOner;
+        private System.Windows.Forms.Timer timer1;
     }
 }
